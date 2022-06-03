@@ -5,8 +5,10 @@ public class Habitat implements Runnable{
     public ArrayList<Individual> test;
     private Population population;
     int[][] data;
+    private final Monitor monitor;
     final int id;
-    public Habitat(int[][] data,  int id) {
+    public Habitat(int[][] data,  int id, Monitor monitor) {
+        this.monitor = monitor;
         Thread thread = new Thread(this);
         this.id = id;
         this.data = data;
@@ -77,10 +79,20 @@ public class Habitat implements Runnable{
     public void run() {
         for (int i = 0; i < 10000; i++) {
             //System.out.println("pokolenie " + i + " watku " + id);
-            population.resolveAdaptation();
-            population.selection();
-            population.doCrossing();
-            population.mutatePopulation(0);
+            synchronized (monitor) {
+                if (i == 2000) {
+                    System.out.println("czekam");
+                    monitor.goWaiting();
+
+                } else if (i == 5000) {
+                    System.out.println("wracam");
+                    monitor.ressurect();
+                }
+                population.resolveAdaptation();
+                population.selection();
+                population.doCrossing();
+                population.mutatePopulation(0);
+            }
             //population.printTheBest();
             //population.printPopulation(0);
 

@@ -131,6 +131,34 @@ public class Population {
 
         return children;
     }
+
+    public Individual[] halfCrossover(Individual parent1, Individual parent2) {
+        Individual[] children = new Individual[2];
+        int[] ospring1 = new int[parent1.size];
+        int[] ospring2 = new int[parent2.size];
+        int xPoint = rand.nextInt(parent2.size/2) + parent2.size/4;
+
+        for (int i = 0; i < xPoint; i++) {
+            ospring1[i] = parent1.getGen(i);
+            ospring2[i] = parent2.getGen(i);
+        }
+        int c1 = xPoint;
+        int c2 = xPoint;
+        for (int i = 0; i < parent1.size; i++) {
+            if (doesNotContain(ospring1, parent2.getGen(i), 0, parent1.size - 1)) {
+                ospring1[c1] = parent2.getGen(i);
+                c1++;
+            }
+            if (doesNotContain(ospring2, parent1.getGen(i), 0, parent1.size - 1)) {
+                ospring2[c2] = parent1.getGen(i);
+                c2++;
+            }
+        }
+        children[0] = new Individual(parent1.size, ospring1);
+        children[1] = new Individual(parent1.size, ospring2);
+
+        return children;
+    }
     public Individual[] orderCrossover(Individual parent1, Individual parent2) {
         Individual[] children = new Individual[2];
         int[] osrping1 = new int[parent1.size];

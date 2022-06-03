@@ -32,8 +32,9 @@ public class Test {
         Individual[] results = new Individual[2];
 
         ArrayList<Habitat> isles = new ArrayList<>();
+        Monitor monitor = new Monitor();
         for (int i = 0; i < 16; i++) {
-            isles.add(new Habitat(data, i));
+            isles.add(new Habitat(data, i, monitor));
         }
 
         System.out.println();
