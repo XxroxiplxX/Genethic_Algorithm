@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Test {
-    public static void main(String[] args) {
+    public static void main(String[] args) {    //przekazuje po prostu nazwe instancji
         /*while (true) {
             System.out.println("(==(     )==)");
             System.out.println(" `-.`. ,',-'");
@@ -10,13 +10,30 @@ public class Test {
         }*/
         //habitat.evolution();
         Parser parser = new Parser();
-        int[][] data = parser.generateMatrixFromFullMatrixData(parser.getMatrixData("ftv33.atsp"), "ftv33.atsp");
+        String format = parser.getFormat(args[0]);
+        System.out.println(format);
+        int dimension = parser.getDimension(args[0]);
+        int[][] data;
+        switch (format) {
+            case "LOWER_DIAG_ROW":
+                data = parser.generateMatrixFromLowerDiagonalMatrixData(parser.getMatrixData(args[0]), args[0]);
+                break;
+            case "":
+                data = parser.generateEuc2DMatrix(parser.getEuc2DNodesCoordinate(args[0]), args[0]);
+                break;
+            case "FULL_MATRIX":
+                data = parser.generateMatrixFromFullMatrixData(parser.getMatrixData(args[0]), args[0]);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + format);
+        }
+
         Individual[] results = new Individual[2];
 
         ArrayList<Habitat> isles = new ArrayList<>();
         Monitor monitor = new Monitor();
         for (int i = 0; i < 16; i++) {
-            isles.add(new Habitat(data, i, monitor, 50, 33));
+            isles.add(new Habitat(data, i, monitor, 50, dimension));
         }
         //Habitat habitat = new Habitat(data, 0, monitor, 50);
 

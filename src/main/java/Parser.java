@@ -6,8 +6,7 @@ import java.util.Scanner;
 public class Parser {
 
 
-    public int[]
-    getMatrixData(String file) {
+    public int[] getMatrixData(String file) {
         int matrixSize = getDimension(file);
         int[] matrixData = new int[matrixSize*matrixSize];
         int charIndex = 0;
@@ -55,8 +54,7 @@ public class Parser {
         }
         return matrixData;
     }
-    public Integer
-    getDimension(String file) {
+    public int  getDimension(String file) {
         int result=-1;
         String data,dimension;
         try {
@@ -78,8 +76,7 @@ public class Parser {
         }
         return result;
     }
-    public  String
-    getType(String file) {
+    public String getType(String file) {
         String data, type = "No type specified";
         try {
             File myFile = new File(file);
@@ -87,7 +84,7 @@ public class Parser {
             while(scanner.hasNextLine()) {
                 data = scanner.nextLine().trim();
                 if(data.startsWith("TYPE")) {
-                    type = data.substring(data.lastIndexOf(" ")+1);;
+                    type = data.substring(data.lastIndexOf(" ")+1);
                     break;
                 }
             }
@@ -98,8 +95,27 @@ public class Parser {
         }
         return type;
     }
-    public  double[][]
-    getEuc2DNodesCoordinate(String file) {
+    public String getFormat(String file) {
+        String data, format = "";
+        try {
+            File myFile = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(file)).getFile());
+            Scanner scanner = new Scanner(myFile);
+            while(scanner.hasNextLine()) {
+                data = scanner.nextLine().trim();
+                if(data.startsWith("EDGE_WEIGHT_FORMAT")) {
+                    format = data.substring(data.lastIndexOf(" ")+1);
+                    break;
+                }
+            }
+            scanner.close();
+        }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("brak pliku");
+        }
+        return  format;
+    }
+    public double[][] getEuc2DNodesCoordinate(String file) {
         int numberOfNodes = this.getDimension(file);
         int nodeIndex=0;;
         double x=0.0,y=0.0;
@@ -150,8 +166,7 @@ public class Parser {
         return tab;
 
     }
-    public  int[][]
-    generateEuc2DMatrix(double[][] coordinates, String file) {
+    public int[][] generateEuc2DMatrix(double[][] coordinates, String file) {
         int dimension = getDimension(file);
         int[][] result = new int[dimension][dimension];
         for(int i= 0 ; i<dimension;i++) {
@@ -164,8 +179,7 @@ public class Parser {
         }
         return result;
     }
-    public  int[][]
-    generateMatrixFromFullMatrixData(int[] data,String file) {
+    public  int[][] generateMatrixFromFullMatrixData(int[] data,String file) {
         int dimension = getDimension(file);
         int iterator = 0;
         int[][] result = new int[dimension][dimension];
@@ -177,8 +191,7 @@ public class Parser {
         }
         return result;
     }
-    public int[][]
-    generateMatrixFromLowerDiagonalMatrixData(int[] data, String file) {
+    public int[][] generateMatrixFromLowerDiagonalMatrixData(int[] data, String file) {
         int dimension = getDimension(file);
         int iterator = 0;
         int[][] result = new int[dimension][dimension];
