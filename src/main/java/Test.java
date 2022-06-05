@@ -34,7 +34,7 @@ public class Test {
         ArrayList<Habitat> isles = new ArrayList<>();
         Monitor monitor = new Monitor();
         for (int i = 0; i < 16; i++) {
-            isles.add(new Habitat(data, i, monitor));
+            isles.add(new Habitat(data, i, monitor, 100));
         }
 
         System.out.println();

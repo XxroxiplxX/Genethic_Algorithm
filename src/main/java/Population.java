@@ -5,17 +5,19 @@ public class Population {
     final private int[][] distances;
     public Individual[] population;
     public ArrayList<Individual> parents;
+    private final int size;
     //Individual p1,p2;
-    public Population(Individual individual, int[][] distances) {
+    public Population(Individual individual, int[][] distances, int size) {
+        this.size = size;
         this.distances = distances;
-        this.population = new Individual[100];
+        this.population = new Individual[size];
         this.parents = new ArrayList<>();
         this.rand = new Random();
         this.init(individual);
     }
     public void init(Individual individual) {
         //System.out.println("inicjuje populacje: ");
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < size; i++) {
             Individual individual1 = new Individual(individual.size, this.permutation(individual.getGenotype(), individual.size));
             this.population[i] = individual1;
         }
@@ -49,10 +51,10 @@ public class Population {
     public void doCrossing(){   //wyznacza nowa populacje, 80% to nowe dzieci, 20% to najsilniejsze osobniki z poprzedniego pokolenia
         //population.clear();
         int i = 0;
-        while (i < 80) {
-            for (int j = 0; j < 99; j++) {
+        while (i < 0.8*size) {
+            for (int j = 0; j < size - 1; j++) {
 
-                if (parents.get(j).compareTo(parents.get(j + 1)) != 0 && i < 80) {
+                if (parents.get(j).compareTo(parents.get(j + 1)) != 0 && i < 0.8*size) {
                     Individual[] children = orderCrossover(parents.get(j), parents.get(j + 1));
                     population[i] = children[0];
                     population[i + 1] = children[1];
@@ -61,7 +63,7 @@ public class Population {
             }
         }
         Collections.sort(parents);
-        for (int j = 99; j > 79; j-- ) {
+        for (int j = size - 1; j > 0.8+size - 1; j-- ) {
             population[j] = (parents.get(j));
         }
         parents.clear();
@@ -87,9 +89,9 @@ public class Population {
     }
     public void selection() {   //losujac liczbe od 0 do 1 decyduje ktore osobniki (w zaleznosci od adaptacji) przezyja
         int i = 0;
-        while (i < 100) {
+        while (i < size) {
             for (Individual individual : population) {
-                if (i == 100) {
+                if (i == size) {
                     return;
                 }
                 if (rand.nextDouble() < individual.getAdaptation()) {
