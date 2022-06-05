@@ -74,6 +74,7 @@ public class Parser {
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("brak pliku");
         }
         return result;
     }
@@ -81,7 +82,7 @@ public class Parser {
     getType(String file) {
         String data, type = "No type specified";
         try {
-            File myFile = new File("AM/" + file);
+            File myFile = new File(file);
             Scanner scanner = new Scanner(myFile);
             while(scanner.hasNextLine()) {
                 data = scanner.nextLine().trim();
@@ -97,15 +98,15 @@ public class Parser {
         }
         return type;
     }
-    public  Double[][]
+    public  double[][]
     getEuc2DNodesCoordinate(String file) {
         int numberOfNodes = this.getDimension(file);
         int nodeIndex=0;;
         double x=0.0,y=0.0;
-        Double[][] tab = new Double[numberOfNodes][2];
+        double[][] tab = new double[numberOfNodes][2];
         String data,currentstring;
         try {
-            File myFile = new File("AM/" + file);
+            File myFile = new File(Objects.requireNonNull(getClass().getClassLoader().getResource(file)).getFile());
             Scanner scanner = new Scanner(myFile);
             while(scanner.hasNextLine()) {
                 data = scanner.nextLine().trim();
@@ -149,10 +150,10 @@ public class Parser {
         return tab;
 
     }
-    public  Integer[][]
-    generateEuc2DMatrix(Double[][] coordinates, String file) {
+    public  int[][]
+    generateEuc2DMatrix(double[][] coordinates, String file) {
         int dimension = getDimension(file);
-        Integer[][] result = new Integer[dimension][dimension];
+        int[][] result = new int[dimension][dimension];
         for(int i= 0 ; i<dimension;i++) {
             for(int j = 0 ; j<dimension; j++) {
                 double dx = Math.abs(coordinates[i][0]-coordinates[j][0]);
@@ -163,11 +164,11 @@ public class Parser {
         }
         return result;
     }
-    public  Integer[][]
-    generateMatrixFromFullMatrixData(Integer[] data,String file) {
+    public  int[][]
+    generateMatrixFromFullMatrixData(int[] data,String file) {
         int dimension = getDimension(file);
         int iterator = 0;
-        Integer[][] result = new Integer[dimension][dimension];
+        int[][] result = new int[dimension][dimension];
         for(int i = 0 ; i < dimension ; i++) {
             for(int j = 0 ; j<dimension ; j++) {
                 result[i][j]=data[iterator];

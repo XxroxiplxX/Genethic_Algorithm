@@ -36,8 +36,8 @@ public class Test1 {
         Individual exper = new Individual(17, p2);
         Individual[] res = new Individual[2];
 
-        Population population = new Population(experimentObject, data);
-        res = population.orderCrossover(experimentObject, exper);
+        //Population population = new Population(experimentObject, data);
+        //res = population.orderCrossover(experimentObject, exper);
         for (int i = 0; i < 17; i++) {
             System.out.print(res[0].getGen(i) + " ");
         }

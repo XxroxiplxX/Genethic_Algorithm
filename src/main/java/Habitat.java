@@ -5,23 +5,22 @@ public class Habitat implements Runnable{
     int[][] data;
     private final Monitor monitor;
     final int id;
-    public Habitat(int[][] data,  int id, Monitor monitor, int sizeOfPopulation) {
+    public Habitat(int[][] data,  int id, Monitor monitor, int sizeOfPopulation, int lengthOfGenotype) {
         this.monitor = monitor;
         Thread thread = new Thread(this);
         this.id = id;
         this.data = data;
-        int[] p1 = {
-                0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
-        };
-        Individual pioneer = new Individual(17,p1);
+        int[] p1 = new int[lengthOfGenotype];
+        for (int i = 0; i < lengthOfGenotype; i++) {
+            p1[i] = i;
+        }
+        Individual pioneer = new Individual(lengthOfGenotype,p1);
         population = new Population(pioneer, data, sizeOfPopulation);
 
         thread.start();
 
-
-
-
     }
+
 
 
     @Override
@@ -38,7 +37,7 @@ public class Habitat implements Runnable{
                     //monitor.ressurect();
                 }
                 population.resolveAdaptation();
-                population.selection();
+                population.selectionByTournament();
                 population.doCrossing();
                 population.mutatePopulation(0);
             }

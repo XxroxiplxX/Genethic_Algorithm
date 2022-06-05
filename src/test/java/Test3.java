@@ -28,9 +28,9 @@ public class Test3 {
         int[] moth = {7,9,2,10,1,3,4,8,6,5};
         Individual father = new Individual(10, fath);
         Individual mother = new Individual(10, moth);
-        Population population = new Population(father, data);
-        Individual[] children = population.halfCrossover(father, mother);
-        children[0].printIndividual();
-        children[1].printIndividual();
+        //Population population = new Population(father, data);
+        //Individual[] children = population.halfCrossover(father, mother);
+        //children[0].printIndividual();
+        //children[1].printIndividual();
     }
 }

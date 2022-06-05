@@ -4,20 +4,20 @@ public class Population {
     final private Random rand;
     final private int[][] distances;
     public Individual[] population;
+    private final int sizeOfPopulation;
     public ArrayList<Individual> parents;
-    private final int size;
     //Individual p1,p2;
-    public Population(Individual individual, int[][] distances, int size) {
-        this.size = size;
+    public Population(Individual individual, int[][] distances, int sizeOfPopulation) {
+        this.sizeOfPopulation = sizeOfPopulation;
         this.distances = distances;
-        this.population = new Individual[size];
+        this.population = new Individual[sizeOfPopulation];
         this.parents = new ArrayList<>();
         this.rand = new Random();
         this.init(individual);
     }
     public void init(Individual individual) {
         //System.out.println("inicjuje populacje: ");
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < sizeOfPopulation; i++) {
             Individual individual1 = new Individual(individual.size, this.permutation(individual.getGenotype(), individual.size));
             this.population[i] = individual1;
         }
@@ -37,7 +37,7 @@ public class Population {
 
         }
 
-            for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             int tmp1 = pi[i];
             int r = rand.nextInt(size);
             pi[i] = pi[r];
@@ -51,10 +51,10 @@ public class Population {
     public void doCrossing(){   //wyznacza nowa populacje, 80% to nowe dzieci, 20% to najsilniejsze osobniki z poprzedniego pokolenia
         //population.clear();
         int i = 0;
-        while (i < 0.8*size) {
-            for (int j = 0; j < size - 1; j++) {
+        while (i < 0.8*sizeOfPopulation) {
+            for (int j = 0; j < sizeOfPopulation - 1; j++) {
 
-                if (parents.get(j).compareTo(parents.get(j + 1)) != 0 && i < 0.8*size) {
+                if (parents.get(j).compareTo(parents.get(j + 1)) != 0 && i < 0.8*sizeOfPopulation) {
                     Individual[] children = orderCrossover(parents.get(j), parents.get(j + 1));
                     population[i] = children[0];
                     population[i + 1] = children[1];
@@ -63,7 +63,7 @@ public class Population {
             }
         }
         Collections.sort(parents);
-        for (int j = size - 1; j > 0.8+size - 1; j-- ) {
+        for (int j = sizeOfPopulation - 1; j > 0.8*sizeOfPopulation - 1; j-- ) {
             population[j] = (parents.get(j));
         }
         parents.clear();
@@ -87,11 +87,11 @@ public class Population {
             }
         }
     }
-    public void selection() {   //losujac liczbe od 0 do 1 decyduje ktore osobniki (w zaleznosci od adaptacji) przezyja
+    public void selectionByRoulette() {   //losujac liczbe od 0 do 1 decyduje ktore osobniki (w zaleznosci od adaptacji) przezyja
         int i = 0;
-        while (i < size) {
+        while (i < sizeOfPopulation) {
             for (Individual individual : population) {
-                if (i == size) {
+                if (i == sizeOfPopulation) {
                     return;
                 }
                 if (rand.nextDouble() < individual.getAdaptation()) {
@@ -101,6 +101,27 @@ public class Population {
             }
         }
         //System.out.println("wyselekcjonowano najsilniejsze osobniki");
+    }
+    public void selectionByTournament() {
+        int i = 0;
+        int group = sizeOfPopulation/10;
+        int[] indexes = new int[group];
+        int best;
+        int k = 0;
+        while (i < sizeOfPopulation) {
+            for (int j = 0; j < group; j++) {
+                indexes[j] = rand.nextInt(sizeOfPopulation);
+            }
+            best = OF(population[indexes[0]]);
+            for (int j = 1; j < group; j++) {
+                if (OF(population[indexes[j]]) < best) {
+                    best = OF(population[indexes[j]]);
+                    k = j;  //na k-tej pozycji w tablicy indeksow jesty indeks z tablicy population zwyciezcy turnieju
+                }
+            }
+            parents.add(population[indexes[k]]);
+            i++;
+        }
     }
     public void resolveAdaptation() {   //przydziela osobnikom prawdopodobienstwo przezycia wyznaczone w stosunku do najsilniejszego osobnika
         double bestAdapted = OF(population[0]);
