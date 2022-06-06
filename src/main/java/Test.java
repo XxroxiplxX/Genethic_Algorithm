@@ -11,6 +11,12 @@ public class Test {
         //habitat.evolution();
         Parser parser = new Parser();
         String format = parser.getFormat(args[0]);
+        int bestKnown = 1;
+        try {
+            bestKnown = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e ) {
+            e.printStackTrace();
+        }
         System.out.println(format);
         int dimension = parser.getDimension(args[0]);
         int[][] data;
@@ -28,13 +34,7 @@ public class Test {
                 throw new IllegalStateException("Unexpected value: " + format);
         }
 
-        Individual[] results = new Individual[2];
-
-        ArrayList<Habitat> isles = new ArrayList<>();
-        Monitor monitor = new Monitor();
-        for (int i = 0; i < 16; i++) {
-            isles.add(new Habitat(data, i, monitor, 50, dimension));
-        }
+        Commander commander = new Commander(data, 200, dimension, bestKnown);
         //Habitat habitat = new Habitat(data, 0, monitor, 50);
 
         System.out.println();
