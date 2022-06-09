@@ -9,7 +9,7 @@ public class Commander {
         isles = new ArrayList<>();
         monitor = new Monitor();
         for (int i = 0; i < 1; i++) {
-            isles.add(new Habitat(data, i, monitor, 50, dimension, bestKnown));
+            isles.add(new Habitat(data, i, monitor, sizeOfPopulation, dimension, bestKnown));
         }
     }
 
