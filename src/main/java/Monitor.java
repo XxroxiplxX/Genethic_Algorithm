@@ -1,4 +1,8 @@
 public class Monitor {
+    private int threadCounter;
+    public Monitor() {
+        threadCounter = 0;
+    }
     public void goWaiting() {
         try {
             wait();
@@ -8,5 +12,11 @@ public class Monitor {
     }
     public void ressurect() {
         notify();
+    }
+    public void incrementThreadCounter() {
+        threadCounter++;
+    }
+    public int getThreadCounter() {
+        return threadCounter;
     }
 }

@@ -96,7 +96,7 @@ public class Population {
                 if (i == sizeOfPopulation) {
                     return;
                 }
-                if (rand.nextDouble() + 0.4 < individual.getAdaptation()) {
+                if (rand.nextDouble() + 0.6 < individual.getAdaptation()) {
                     parents.add(individual);
                     i++;
                 }

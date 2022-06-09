@@ -1,15 +1,18 @@
+import java.util.ArrayList;
 
 public class Habitat implements Runnable{
 
     private final Population population;
     int[][] data;
     private final Monitor monitor;
+    private final ArrayList<String> results;
     private DataCollector dataCollector;
     private Individual pioneer;
     private final int bestKnown;
     final int id;
-    public Habitat(int[][] data,  int id, Monitor monitor, int sizeOfPopulation, int lengthOfGenotype, int bestKnown) {
+    public Habitat(int[][] data, int id, Monitor monitor, int sizeOfPopulation, int lengthOfGenotype, int bestKnown, ArrayList<String> results) {
         this.bestKnown = bestKnown;
+        this.results = results;
         this.monitor = monitor;
         Thread thread = new Thread(this);
         this.id = id;
@@ -31,13 +34,13 @@ public class Habitat implements Runnable{
     public void run() {
         Individual alpha;
         int iterationsWithoutImprovement = 0;
-        int crit = 10000;
+        int crit = 6000;
         for (int i = 0; i < crit; i++) {
             //System.out.println("pokolenie " + i + " watku " + id);
             synchronized (monitor) {
                 iterationsWithoutImprovement++;
                 population.resolveAdaptation();
-                population.selectionByTournament();
+                population.selectionByRoulette();
                 population.doCrossing();
                 alpha = population.getAlpha();
                 if (population.getOF(alpha) < population.getOF(pioneer)) {
@@ -51,10 +54,12 @@ public class Habitat implements Runnable{
                     iterationsWithoutImprovement = 0;
                 }
                 if (iterationsWithoutImprovement > 0.4*crit) {
-                    population.mutatePopulation(0.8);
+                    population.mutatePopulation(0.9);
                     crit += 0.1*crit;
                     iterationsWithoutImprovement = 0;
-                    System.out.println("Fallout procedure " + i);
+                    if (id == 0) {
+                        System.out.println("Fallout procedure " + i);
+                    }
                 } else {
                     population.mutatePopulation(0.06);
                 }
@@ -74,8 +79,15 @@ public class Habitat implements Runnable{
             System.out.println(crit - 1 + " " + population.getOF(pioneer) + " " + PRD(population.getOF(pioneer)) *100+ "%");
             population.getAlpha().printIndividual();
         } else {
-            System.out.println("Island " + id + " found cycle with OF: " + population.getOF(population.getAlpha()));
+
+            String result = "Island " + id + " found a cycle with OF: " + population.getOF(population.getAlpha());
+            synchronized (monitor) {
+                results.add(result);
+            }
+
+            //System.out.println("Island " + id + " found cycle with OF: " + population.getOF(population.getAlpha()));
         }
+        monitor.incrementThreadCounter();
     }
     public Individual getAlphaFromHabitat() {
         return population.getAlpha();
