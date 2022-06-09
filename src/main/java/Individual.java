@@ -61,14 +61,24 @@ public class Individual implements Solution {
         }
     }
     public void mutationSwap(int p, int q) {
-        int tmp = genotype[p];
-        genotype[p] = genotype[q];
-        genotype[q] = tmp;
+        swap(p,q);
+    }
+    public void mutationInvert(int p, int q) {
+        while (p < q) {
+            swap(p,q);
+            p++;
+            q--;
+        }
     }
     public void printIndividual() {
         for (int i = 0; i < size; i++) {
             System.out.print(this.getGen(i) + " ");
         }
         System.out.println();
+    }
+    private void swap(int p, int q) {
+        int tmp = genotype[p];
+        genotype[p] = genotype[q];
+        genotype[q] = tmp;
     }
 }
