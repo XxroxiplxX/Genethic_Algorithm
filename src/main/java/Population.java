@@ -3,12 +3,14 @@ import java.util.*;
 public class Population {
     final private Random rand;
     final private int[][] distances;
+    final private double rouletteCrit;
     public Individual[] population;
     private final int sizeOfPopulation;
     public ArrayList<Individual> parents;
     //Individual p1,p2;
-    public Population(Individual individual, int[][] distances, int sizeOfPopulation) {
+    public Population(Individual individual, int[][] distances, int sizeOfPopulation,double rC) {
         this.sizeOfPopulation = sizeOfPopulation;
+        rouletteCrit = rC;
         this.distances = distances;
         this.population = new Individual[sizeOfPopulation];
         this.parents = new ArrayList<>();
@@ -96,7 +98,7 @@ public class Population {
                 if (i == sizeOfPopulation) {
                     return;
                 }
-                if (rand.nextDouble() + 0.6 < individual.getAdaptation()) {
+                if (rand.nextDouble() + rouletteCrit < individual.getAdaptation()) {
                     parents.add(individual);
                     i++;
                 }
@@ -301,6 +303,9 @@ public class Population {
     }
     public void printTheBest() {
         System.out.println("Najlepszy osobnik ma OF wilkisci: " + OF(this.findaAlpha()));
+    }
+    public double getRouletteCrit() {
+        return rouletteCrit;
     }
 
 

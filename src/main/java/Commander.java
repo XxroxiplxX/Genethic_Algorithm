@@ -9,12 +9,16 @@ public class Commander {
         isles = new ArrayList<>();
         results = new ArrayList<>();
         Monitor monitor = new Monitor();
-        for (int i = 0; i < 10; i++) {
-            isles.add(new Habitat(data, i, monitor, sizeOfPopulation, dimension, bestKnown, results));
+        double p = 0.165;
+        double c = 0.45;
+        for (int i = 0; i < 50; i++) {
+            isles.add(new Habitat(data, i, monitor, sizeOfPopulation, dimension, bestKnown, results, p, c));
+            //p+=0.005;
+            c += 0.005;
         }
-        while (!(monitor.getThreadCounter() == 10)) {
+        while (!(monitor.getThreadCounter() == 50)) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

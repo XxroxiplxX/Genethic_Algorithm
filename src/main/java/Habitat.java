@@ -9,9 +9,11 @@ public class Habitat implements Runnable{
     private DataCollector dataCollector;
     private Individual pioneer;
     private final int bestKnown;
+    private final double ppbOfMutation;
     final int id;
-    public Habitat(int[][] data, int id, Monitor monitor, int sizeOfPopulation, int lengthOfGenotype, int bestKnown, ArrayList<String> results) {
+    public Habitat(int[][] data, int id, Monitor monitor, int sizeOfPopulation, int lengthOfGenotype, int bestKnown, ArrayList<String> results, double ppbOfMutation, double rouletteCrit) {
         this.bestKnown = bestKnown;
+        this.ppbOfMutation = ppbOfMutation;
         this.results = results;
         this.monitor = monitor;
         Thread thread = new Thread(this);
@@ -22,7 +24,7 @@ public class Habitat implements Runnable{
             p1[i] = i;
         }
         pioneer = new Individual(lengthOfGenotype,p1);
-        population = new Population(pioneer, data, sizeOfPopulation);
+        population = new Population(pioneer, data, sizeOfPopulation, rouletteCrit);
 
         thread.start();
 
@@ -34,7 +36,7 @@ public class Habitat implements Runnable{
     public void run() {
         Individual alpha;
         int iterationsWithoutImprovement = 0;
-        int crit = 6000;
+        int crit = 10000;
         for (int i = 0; i < crit; i++) {
             //System.out.println("pokolenie " + i + " watku " + id);
             synchronized (monitor) {
@@ -61,7 +63,7 @@ public class Habitat implements Runnable{
                         System.out.println("Fallout procedure " + i);
                     }
                 } else {
-                    population.mutatePopulation(0.06);
+                    population.mutatePopulation(ppbOfMutation);
                 }
 
             }
@@ -72,7 +74,7 @@ public class Habitat implements Runnable{
 
         }
         population.resolveAdaptation();
-        population.selectionByTournament();
+        population.selectionByRoulette();
         population.doCrossing();
         //dataCollector.collectData(population.getAlpha(), population.getOF(population.getAlpha()));
         if (id == 0) {
@@ -80,7 +82,8 @@ public class Habitat implements Runnable{
             population.getAlpha().printIndividual();
         } else {
 
-            String result = "Island " + id + " found a cycle with OF: " + population.getOF(population.getAlpha());
+            //String result = "Island " + id + " found a cycle with OF: " + population.getOF(population.getAlpha()) + " and PRD = " + PRD(population.getOF(pioneer)) *100+ "%";
+            String result = population.getRouletteCrit() + ";" + PRD(population.getOF(pioneer)) *100;
             synchronized (monitor) {
                 results.add(result);
             }
