@@ -34,7 +34,7 @@ public class Test {
                 throw new IllegalStateException("Unexpected value: " + format);
         }
 
-        Commander commander = new Commander(data, 200, dimension, bestKnown);
+        Commander commander = new Commander(data, 50, dimension, bestKnown);
         //Habitat habitat = new Habitat(data, 0, monitor, 50);
 
         System.out.println();

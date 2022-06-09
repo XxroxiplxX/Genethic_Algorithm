@@ -30,18 +30,35 @@ public class Habitat implements Runnable{
     @Override
     public void run() {
         Individual alpha;
-        for (int i = 0; i < 10000; i++) {
+        int iterationsWithoutImprovement = 0;
+        int crit = 10000;
+        for (int i = 0; i < crit; i++) {
             //System.out.println("pokolenie " + i + " watku " + id);
             synchronized (monitor) {
+                iterationsWithoutImprovement++;
                 population.resolveAdaptation();
                 population.selectionByTournament();
                 population.doCrossing();
                 alpha = population.getAlpha();
                 if (population.getOF(alpha) < population.getOF(pioneer)) {
                     pioneer = alpha;
-                    System.out.println(i + " " + population.getOF(pioneer) + " " + PRD(population.getOF(pioneer)) + "%");
+
+                    if (id == 0) {
+                        System.out.println(i + " " + population.getOF(pioneer) + " " + PRD(population.getOF(pioneer)) *100+ "%");
+                    }
+                    //System.out.println(iterationsWithoutImprovement);
+
+                    iterationsWithoutImprovement = 0;
                 }
-                population.mutatePopulation(0);
+                if (iterationsWithoutImprovement > 0.4*crit) {
+                    population.mutatePopulation(0.8);
+                    crit += 0.1*crit;
+                    iterationsWithoutImprovement = 0;
+                    System.out.println("Fallout procedure " + i);
+                } else {
+                    population.mutatePopulation(0.06);
+                }
+
             }
             //population.printTheBest();
             //population.printPopulation(0);
@@ -53,7 +70,12 @@ public class Habitat implements Runnable{
         population.selectionByTournament();
         population.doCrossing();
         //dataCollector.collectData(population.getAlpha(), population.getOF(population.getAlpha()));
-        population.getAlpha().printIndividual();
+        if (id == 0) {
+            System.out.println(crit - 1 + " " + population.getOF(pioneer) + " " + PRD(population.getOF(pioneer)) *100+ "%");
+            population.getAlpha().printIndividual();
+        } else {
+            System.out.println("Island " + id + " found cycle with OF: " + population.getOF(population.getAlpha()));
+        }
     }
     public Individual getAlphaFromHabitat() {
         return population.getAlpha();

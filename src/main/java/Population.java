@@ -24,8 +24,10 @@ public class Population {
     }
     public void mutatePopulation(double probability) {
         for (Individual individual : population) {
-            if (rand.nextDouble() < probability) {
-                individual.mutationSwap(rand.nextInt(individual.size/2), 2* rand.nextInt(individual.size/2));
+            double r = rand.nextDouble();
+            if (r < probability) {
+                individual.mutationInvert(rand.nextInt(individual.size/2), 2* rand.nextInt(individual.size/2));
+                //System.out.println();
             }
         }
     }
@@ -94,7 +96,7 @@ public class Population {
                 if (i == sizeOfPopulation) {
                     return;
                 }
-                if (rand.nextDouble() < individual.getAdaptation()) {
+                if (rand.nextDouble() + 0.4 < individual.getAdaptation()) {
                     parents.add(individual);
                     i++;
                 }
