@@ -28,7 +28,7 @@ public class Population {
         for (Individual individual : population) {
             double r = rand.nextDouble();
             if (r < probability) {
-                individual.mutationInsert(rand.nextInt(individual.size/2), 2* rand.nextInt(individual.size/2));
+                individual.mutationInvert(rand.nextInt(individual.size/2), 2* rand.nextInt(individual.size/2));
                 //System.out.println();
             }
         }
