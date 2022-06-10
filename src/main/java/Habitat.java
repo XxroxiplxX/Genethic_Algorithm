@@ -11,6 +11,7 @@ public class Habitat implements Runnable{
     private final int bestKnown;
     private final double ppbOfMutation;
     final int id;
+    private final int sizeOfPop;
     public Habitat(int[][] data, int id, Monitor monitor, int sizeOfPopulation, int lengthOfGenotype, int bestKnown, ArrayList<String> results, double ppbOfMutation, double rouletteCrit) {
         this.bestKnown = bestKnown;
         this.ppbOfMutation = ppbOfMutation;
@@ -18,6 +19,7 @@ public class Habitat implements Runnable{
         this.monitor = monitor;
         Thread thread = new Thread(this);
         this.id = id;
+        sizeOfPop = sizeOfPopulation;
         this.data = data;
         int[] p1 = new int[lengthOfGenotype];
         for (int i = 0; i < lengthOfGenotype; i++) {
@@ -42,7 +44,7 @@ public class Habitat implements Runnable{
             synchronized (monitor) {
                 iterationsWithoutImprovement++;
                 population.resolveAdaptation();
-                population.selectionByRoulette();
+                population.selectionByTournament();
                 population.doCrossing();
                 alpha = population.getAlpha();
                 if (population.getOF(alpha) < population.getOF(pioneer)) {
@@ -74,7 +76,7 @@ public class Habitat implements Runnable{
 
         }
         population.resolveAdaptation();
-        population.selectionByRoulette();
+        population.selectionByTournament();
         population.doCrossing();
         //dataCollector.collectData(population.getAlpha(), population.getOF(population.getAlpha()));
         if (id == 0) {
@@ -82,8 +84,8 @@ public class Habitat implements Runnable{
             population.getAlpha().printIndividual();
         } else {
 
-            //String result = "Island " + id + " found a cycle with OF: " + population.getOF(population.getAlpha()) + " and PRD = " + PRD(population.getOF(pioneer)) *100+ "%";
-            String result = population.getRouletteCrit() + ";" + PRD(population.getOF(pioneer)) *100;
+            String result = "Island " + id + " found a cycle with OF: " + population.getOF(pioneer) + " and PRD = " + PRD(population.getOF(pioneer)) *100+ "%";
+            //String result = ppbOfMutation + ";" + PRD(population.getOF(pioneer)) *100;
             synchronized (monitor) {
                 results.add(result);
             }
@@ -96,6 +98,6 @@ public class Habitat implements Runnable{
         return population.getAlpha();
     }
     private double PRD(int of) {
-        return (double) (of - bestKnown)/of;
+        return (double) (of - bestKnown)/bestKnown;
     }
 }

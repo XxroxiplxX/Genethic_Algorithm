@@ -33,11 +33,11 @@ public class Test {
             default:
                 throw new IllegalStateException("Unexpected value: " + format);
         }
-
-        Commander commander = new Commander(data, 50, dimension, bestKnown);
+        System.out.println();
+        Commander commander = new Commander(data, 100, dimension, bestKnown);
         //Habitat habitat = new Habitat(data, 0, monitor, 50);
 
-        System.out.println();
+
     }
         /*
         int[][] p1 = {
